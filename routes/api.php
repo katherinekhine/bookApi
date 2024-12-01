@@ -13,4 +13,5 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'login']);
 Route::get('/profile/{user}', [AuthController::class, 'profile'])->middleware('auth:api');
 
-Route::apiResource('articles', ArticleController::class)->middleware('auth:api');
+Route::apiResource('articles', ArticleController::class)->middleware('auth:api')->except(['index', 'show']);
+Route::apiResource('articles', ArticleController::class)->only(['index', 'show']);
