@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ArticleController extends Controller
 {
@@ -43,11 +44,15 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        $data = $request->validate([
-            'detail' => 'required',
-        ]);
-        $article->update($data);
-        return response()->json($article);
+        if (Gate::allows('update', [Auth::user(), $article])) {
+            $data = $request->validate([
+                'detail' => 'required',
+            ]);
+            $article->update($data);
+            return response()->json($article);
+        } else {
+            return response()->json(['message' => 'You are not authorized to update this article'], 403);
+        }
     }
 
     /**
@@ -55,7 +60,11 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        $article->delete();
-        return response()->json(['message' => 'Article deleted successfully']);
+        if (Gate::allows('delete', [Auth::user(), $article])) {
+            $article->delete();
+            return response()->json(['message' => 'Article deleted successfully'], 200);
+        } else {
+            return response()->json(['message' => 'You are not authorized to delete this article'], 403);
+        }
     }
 }
