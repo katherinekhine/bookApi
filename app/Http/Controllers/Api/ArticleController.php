@@ -44,7 +44,16 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        if (Gate::allows('update', [Auth::user(), $article])) {
+        // if (Gate::allows('update', [Auth::user(), $article])) {
+        //     $data = $request->validate([
+        //         'detail' => 'required',
+        //     ]);
+        //     $article->update($data);
+        //     return response()->json($article);
+        // } else {
+        //     return response()->json(['message' => 'You are not authorized to update this article'], 403);
+        // }
+        if (Gate::allows('update', $article)) {
             $data = $request->validate([
                 'detail' => 'required',
             ]);
@@ -60,7 +69,14 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        if (Gate::allows('delete', [Auth::user(), $article])) {
+        // if (Gate::allows('delete', [Auth::user(), $article])) {
+        //     $article->delete();
+        //     return response()->json(['message' => 'Article deleted successfully'], 200);
+        // } else {
+        //     return response()->json(['message' => 'You are not authorized to delete this article'], 403);
+        // }
+
+        if (Gate::allows('delete', $article)) {
             $article->delete();
             return response()->json(['message' => 'Article deleted successfully'], 200);
         } else {
